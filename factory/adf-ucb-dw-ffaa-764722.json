@@ -1,0 +1,10 @@
+{
+	"name": "adf-ucb-dw-ffaa-764722",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralus"
+}
