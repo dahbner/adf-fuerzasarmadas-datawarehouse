@@ -12,7 +12,17 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_especialidad",
+				"name": "id_estructura",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_padre",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nivel",
 				"type": "varchar"
 			},
 			{
@@ -20,7 +30,15 @@
 				"type": "varchar"
 			},
 			{
-				"name": "area",
+				"name": "sigla",
+				"type": "varchar"
+			},
+			{
+				"name": "tipo",
+				"type": "varchar"
+			},
+			{
+				"name": "cobertura_departamentos",
 				"type": "varchar"
 			}
 		],

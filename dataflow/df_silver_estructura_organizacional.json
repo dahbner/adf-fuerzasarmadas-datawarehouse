@@ -1,0 +1,83 @@
+{
+	"name": "df_silver_estructura_organizacional",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_estructura_organizacional",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeEstructuraOrganizacional"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_estructura_organizacional",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedEstructura"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_estructura as string,",
+				"          id_padre as string,",
+				"          nivel as string,",
+				"          nombre as string,",
+				"          sigla as string,",
+				"          tipo as string,",
+				"          cobertura_departamentos as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeEstructuraOrganizacional",
+				"bronzeEstructuraOrganizacional derive(id_estructura = toInteger(id_estructura),",
+				"          id_padre = toInteger(iif(lower(trim(id_padre)) == 'null' || trim(id_padre) == '', toString(null()), id_padre)),",
+				"          nivel = initCap(trim(nivel)),",
+				"          nombre = trim(regexReplace(nombre, '\\\\s+', ' ')),",
+				"          sigla = iif(isNull(sigla) || lower(trim(sigla)) == 'null' || trim(sigla) == '', 'N/A', upper(trim(sigla))),",
+				"          tipo = iif(isNull(tipo) || lower(trim(tipo)) == 'null' || trim(tipo) == '', 'N/A', initCap(trim(regexReplace(tipo, '\\\\s+', ' ')))),",
+				"          cobertura_departamentos = iif(isNull(cobertura_departamentos) || lower(trim(cobertura_departamentos)) == 'null' || trim(cobertura_departamentos) == '', 'N/A', trim(regexReplace(cobertura_departamentos, '\\\\s+', ' ')))) ~> derivedEstructura",
+				"derivedEstructura sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_estructura as integer,",
+				"          id_padre as integer,",
+				"          nivel as string,",
+				"          nombre as string,",
+				"          sigla as string,",
+				"          tipo as string,",
+				"          cobertura_departamentos as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_estructura,",
+				"          id_padre,",
+				"          nivel,",
+				"          nombre,",
+				"          sigla,",
+				"          tipo,",
+				"          cobertura_departamentos",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
