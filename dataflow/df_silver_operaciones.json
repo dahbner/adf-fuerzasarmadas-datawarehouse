@@ -1,0 +1,121 @@
+{
+	"name": "df_silver_operaciones",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_operaciones",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeOperaciones"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_operaciones",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_operacion as string,",
+				"          id_tipo as string,",
+				"          id_unidad_resp as string,",
+				"          id_zona as string,",
+				"          nombre_operacion as string,",
+				"          fecha_inicio as string,",
+				"          fecha_fin as string,",
+				"          efectivos_desplegados as string,",
+				"          vehiculos_utilizados as string,",
+				"          duracion_dias as string,",
+				"          costo_operacion as string,",
+				"          resultado as string,",
+				"          detenidos as string,",
+				"          area_km2 as string,",
+				"          incidentes as string,",
+				"          observaciones as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeOperaciones",
+				"bronzeOperaciones derive(id_operacion = ERROR_FUNCTION(''),",
+				"          id_tipo = ERROR_FUNCTION(''),",
+				"          id_unidad_resp = ERROR_FUNCTION(''),",
+				"          id_zona = ERROR_FUNCTION(''),",
+				"          nombre_operacion = ERROR_FUNCTION(''),",
+				"          fecha_inicio = ERROR_FUNCTION(''),",
+				"          fecha_fin = ERROR_FUNCTION(''),",
+				"          efectivos_desplegados = ERROR_FUNCTION(''),",
+				"          vehiculos_utilizados = ERROR_FUNCTION(''),",
+				"          duracion_dias = ERROR_FUNCTION(''),",
+				"          costo_operacion = ERROR_FUNCTION(''),",
+				"          resultado = ERROR_FUNCTION(''),",
+				"          detenidos = ERROR_FUNCTION(''),",
+				"          area_km2 = ERROR_FUNCTION(''),",
+				"          incidentes = ERROR_FUNCTION(''),",
+				"          observaciones = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_operacion as integer,",
+				"          id_tipo as integer,",
+				"          id_unidad_resp as integer,",
+				"          id_zona as integer,",
+				"          nombre_operacion as string,",
+				"          fecha_inicio as date,",
+				"          fecha_fin as date,",
+				"          efectivos_desplegados as integer,",
+				"          vehiculos_utilizados as integer,",
+				"          duracion_dias as integer,",
+				"          costo_operacion as decimal(18,2),",
+				"          resultado as string,",
+				"          detenidos as integer,",
+				"          area_km2 as decimal(10,2),",
+				"          incidentes as integer,",
+				"          observaciones as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_operacion,",
+				"          id_tipo,",
+				"          id_unidad_resp,",
+				"          id_zona,",
+				"          nombre_operacion,",
+				"          fecha_inicio,",
+				"          fecha_fin,",
+				"          efectivos_desplegados,",
+				"          vehiculos_utilizados,",
+				"          duracion_dias,",
+				"          costo_operacion,",
+				"          resultado,",
+				"          detenidos,",
+				"          area_km2,",
+				"          incidentes,",
+				"          observaciones",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"name": "df_silver_zonas",
+	"name": "df_silver_rangos",
 	"properties": {
 		"folder": {
 			"name": "silver"
@@ -9,16 +9,16 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "bronze_zonas",
+						"referenceName": "bronze_rangos",
 						"type": "DatasetReference"
 					},
-					"name": "bronzeZonas"
+					"name": "bronzeRangos"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "silver_zonas",
+						"referenceName": "silver_rangos",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -31,29 +31,29 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          id_zona as string,",
+				"          id_rango as string,",
 				"          nombre as string,",
-				"          departamento as string,",
-				"          frontera_con as string,",
-				"          tipo_terreno as string,",
-				"          altitud_msnm as string,",
-				"          acceso_carretero as string",
+				"          categoria as string,",
+				"          nivel_jerarquico as string,",
+				"          abreviatura as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> bronzeZonas",
-				"bronzeZonas derive() ~> derivedColumn1",
+				"     format: 'table') ~> bronzeRangos",
+				"bronzeRangos derive(id_rango = ERROR_FUNCTION(''),",
+				"          nombre = ERROR_FUNCTION(''),",
+				"          categoria = ERROR_FUNCTION(''),",
+				"          nivel_jerarquico = ERROR_FUNCTION(''),",
+				"          abreviatura = ERROR_FUNCTION('')) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          id_zona as integer,",
+				"          id_rango as integer,",
 				"          nombre as string,",
-				"          departamento as string,",
-				"          frontera_con as string,",
-				"          tipo_terreno as string,",
-				"          altitud_msnm as integer,",
-				"          acceso_carretero as string",
+				"          categoria as string,",
+				"          nivel_jerarquico as integer,",
+				"          abreviatura as string",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -65,13 +65,11 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          id_zona,",
+				"          id_rango,",
 				"          nombre,",
-				"          departamento,",
-				"          frontera_con,",
-				"          tipo_terreno,",
-				"          altitud_msnm,",
-				"          acceso_carretero",
+				"          categoria,",
+				"          nivel_jerarquico,",
+				"          abreviatura",
 				"     )) ~> sink1"
 			]
 		}

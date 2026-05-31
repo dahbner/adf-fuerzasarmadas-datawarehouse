@@ -12,15 +12,25 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_especialidad",
-				"type": "varchar"
+				"name": "id_rango",
+				"type": "int",
+				"precision": 10
 			},
 			{
 				"name": "nombre",
 				"type": "varchar"
 			},
 			{
-				"name": "area",
+				"name": "categoria",
+				"type": "varchar"
+			},
+			{
+				"name": "nivel_jerarquico",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "abreviatura",
 				"type": "varchar"
 			}
 		],

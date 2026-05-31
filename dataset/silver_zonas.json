@@ -12,15 +12,33 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_especialidad",
-				"type": "varchar"
+				"name": "id_zona",
+				"type": "int",
+				"precision": 10
 			},
 			{
 				"name": "nombre",
 				"type": "varchar"
 			},
 			{
-				"name": "area",
+				"name": "departamento",
+				"type": "varchar"
+			},
+			{
+				"name": "frontera_con",
+				"type": "varchar"
+			},
+			{
+				"name": "tipo_terreno",
+				"type": "varchar"
+			},
+			{
+				"name": "altitud_msnm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "acceso_carretero",
 				"type": "varchar"
 			}
 		],

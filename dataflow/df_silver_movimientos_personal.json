@@ -1,0 +1,93 @@
+{
+	"name": "df_silver_movimientos_personal",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_movimientos_personal",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeMovimientosPersonal"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_movimientos_personal",
+						"type": "DatasetReference"
+					},
+					"name": "silverMovimientosPersonal"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_movimiento as string,",
+				"          id_efectivo as string,",
+				"          id_unidad_destino as string,",
+				"          id_rango as string,",
+				"          id_tipo as string,",
+				"          fecha_movimiento as string,",
+				"          antiguedad_anios as string,",
+				"          salario_mensual as string,",
+				"          observaciones as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeMovimientosPersonal",
+				"bronzeMovimientosPersonal derive(id_movimiento = toInteger(id_movimiento),",
+				"          id_efectivo = toInteger(id_efectivo),",
+				"          id_unidad_destino = toInteger(id_unidad_destino),",
+				"          id_rango = toInteger(id_rango),",
+				"          id_tipo = toInteger(id_tipo),",
+				"          fecha_movimiento = coalesce(     toDate(fecha_movimiento, 'yyyy/MM/dd'),     toDate(fecha_movimiento, 'yyyy-MM-dd'),     toDate(fecha_movimiento, 'dd/MM/yyyy'),     toDate(fecha_movimiento, 'yyyyMMdd'),     toDate(fecha_movimiento, 'dd-MM-yyyy'),     toDate(fecha_movimiento, 'MM-dd-yyyy') ),",
+				"          antiguedad_anios = toDecimal(     replace(         regexReplace(             regexReplace(                 replace(                     replace(                         replace(                             replace(                                 replace(                                     replace(                                         replace(                                             replace(                                                 replace(                                                     replace(                                                         replace(                                                             replace(                                                                 replace(                                                                     replace(                                                                         replace(                                                                             replace(                                                                                 replace(                                                                                     replace(                                                                                         replace(                                                                                             replace(                                                                                                 replace(                                                                                                     replace(                                                                                                         replace(                                                                                                             replace(                                                                                                                 replace(                                                                                                                     replace(                                                                                                                         lower(trim(antiguedad_anios)),                                                                                                                      'aprox.', ''),                                                                                                                 'veinticinco', '25'),                                                                                                             'veinticuatro', '24'),                                                                                                         'veintitrés', '23'),                                                                                                     'veintidós', '22'),                                                                                                 'veintiuno', '21'),                                                                                             'diecinueve', '19'),                                                                                         'dieciocho', '18'),                                                                                     'diecisiete', '17'),                                                                                 'dieciséis', '16'),                                                                             'quince', '15'),                                                                         'catorce', '14'),                                                                     'trece', '13'),                                                                 'doce', '12'),                                                             'once', '11'),                                                         'veinte', '20'),                                                     'nueve', '9'),                                                 'siete', '7'),                                             'cinco', '5'),                                         'ocho', '8'),                                     'tres', '3'),                                 'seis', '6'),                             'diez', '10'),                         'cero', '0'),                     'dos', '2'),                 'uno', '1'),             ',', '.'         ),          '[^0-9\\\\.]', ''     ),     '\\\\.$', '' ), 4, 1),",
+				"          salario_mensual = iif(     isNull(salario_mensual) || rlike(lower(trim(salario_mensual)), '^(null|n/d|nd|n/a|sin dato|s/d|\\\\-+)$|^$'), toDecimal(null()),     toDecimal(         toFloat(             iif(                 rlike(regexReplace(regexReplace(salario_mensual, '(?i)bs\\\\.?', ''), '[^0-9\\\\.,]', ''), ',\\\\d{1,2}$'),                  replace(replace(regexReplace(regexReplace(salario_mensual, '(?i)bs\\\\.?', ''), '[^0-9\\\\.,]', ''), '.', ''), ',', '.'),                  replace(regexReplace(regexReplace(salario_mensual, '(?i)bs\\\\.?', ''), '[^0-9\\\\.,]', ''), ',', '')             )         ),          18, 2     ) ),",
+				"          observaciones = iif(     isNull(observaciones) || rlike(lower(trim(observaciones)), '^(null|n/d|nd|n/a|sin dato|s/d|\\\\-+|^s/n$|^sin obs\\\\.?$|^sin observaciones)$|^$'), 'Sin observaciones',     initCap(         trim(             regexReplace(                 replace(                     replace(                         replace(                             replace(observaciones, '\\r', ' '),                          '\\n', ' '),                      '—', ' '),                  '-', ' '),              '\\\\s+', ' ')         )     ) )) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_movimiento as integer,",
+				"          id_efectivo as integer,",
+				"          id_unidad_destino as integer,",
+				"          id_rango as integer,",
+				"          id_tipo as integer,",
+				"          fecha_movimiento as date,",
+				"          antiguedad_anios as integer,",
+				"          salario_mensual as decimal(18,2),",
+				"          observaciones as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_movimiento,",
+				"          id_efectivo,",
+				"          id_unidad_destino,",
+				"          id_rango,",
+				"          id_tipo,",
+				"          fecha_movimiento,",
+				"          antiguedad_anios,",
+				"          salario_mensual,",
+				"          observaciones",
+				"     )) ~> silverMovimientosPersonal"
+			]
+		}
+	}
+}
