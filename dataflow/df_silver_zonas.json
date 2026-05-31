@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "df_silver_zonas",
 	"properties": {
 		"folder": {
 			"name": "silver"
@@ -8,14 +8,34 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "source1"
+					"dataset": {
+						"referenceName": "bronze_zonas",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeZonas"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          id_zona as string,",
+				"          nombre as string,",
+				"          departamento as string,",
+				"          frontera_con as string,",
+				"          tipo_terreno as string,",
+				"          altitud_msnm as string,",
+				"          acceso_carretero as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeZonas",
+				"bronzeZonas derive() ~> derivedColumn1"
 			]
 		}
 	}
