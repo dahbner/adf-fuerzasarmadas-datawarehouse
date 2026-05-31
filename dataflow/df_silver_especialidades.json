@@ -1,0 +1,68 @@
+{
+	"name": "df_silver_especialidades",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_especialidades",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeEspecialidades"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_especialidades",
+						"type": "DatasetReference"
+					},
+					"name": "silverEspecialidades"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_especialidad as string,",
+				"          nombre as string,",
+				"          area as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeEspecialidades",
+				"bronzeEspecialidades derive(id_especialidad = toInteger(id_especialidad),",
+				"          nombre = initCap(regexReplace(trim(nombre), '\\\\s+', ' ')),",
+				"          area = initCap(trim(replace(area, '_', ' ')))) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_especialidad as string,",
+				"          nombre as string,",
+				"          area as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_especialidad,",
+				"          nombre,",
+				"          area",
+				"     )) ~> silverEspecialidades"
+			]
+		}
+	}
+}
