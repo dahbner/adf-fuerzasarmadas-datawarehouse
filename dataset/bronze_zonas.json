@@ -1,0 +1,48 @@
+{
+	"name": "bronze_zonas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw_ffaa",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bronze"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id_zona",
+				"type": "varchar"
+			},
+			{
+				"name": "nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "departamento",
+				"type": "varchar"
+			},
+			{
+				"name": "frontera_con",
+				"type": "varchar"
+			},
+			{
+				"name": "tipo_terreno",
+				"type": "varchar"
+			},
+			{
+				"name": "altitud_msnm",
+				"type": "varchar"
+			},
+			{
+				"name": "acceso_carretero",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "bronze",
+			"table": "tbl_zonas"
+		}
+	}
+}
