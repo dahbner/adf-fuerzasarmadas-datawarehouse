@@ -1,0 +1,42 @@
+{
+	"name": "dbo_rangos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw_ffaa",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo-oltp"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id_rango",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nombre",
+				"type": "nvarchar"
+			},
+			{
+				"name": "categoria",
+				"type": "nvarchar"
+			},
+			{
+				"name": "nivel_jerarquico",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "abreviatura",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "oltp",
+			"table": "tbl_rangos"
+		}
+	}
+}
