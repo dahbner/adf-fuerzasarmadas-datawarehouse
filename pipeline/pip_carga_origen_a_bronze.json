@@ -1,9 +1,9 @@
 {
-	"name": "PL_Carga_Silver",
+	"name": "pip_carga_origen_a_bronze",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "pip_cargar_datos_dob_bronze",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow1",
+						"referenceName": "df_cargar_dbo_a_bronze",
 						"type": "DataFlowReference"
 					},
 					"compute": {
