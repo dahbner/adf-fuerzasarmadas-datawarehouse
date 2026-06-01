@@ -1,0 +1,70 @@
+{
+	"name": "gold_hechos_movimientos_personal",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw_ffaa",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "gold"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "movimiento_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_movimiento_origen",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "efectivo_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "unidad_destino_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "rango_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tipo_mov_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fecha_movimiento_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "antiguedad_anios",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "salario_mensual",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "observaciones",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "gold",
+			"table": "hechos_movimientos_personal"
+		}
+	}
+}

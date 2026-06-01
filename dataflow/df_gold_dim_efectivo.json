@@ -1,0 +1,76 @@
+{
+	"name": "df_gold_dim_efectivo",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_efectivos",
+						"type": "DatasetReference"
+					},
+					"name": "silverEfectivos"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "gold_dim_efectivo",
+						"type": "DatasetReference"
+					},
+					"name": "goldDimEfectivos"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          id_efectivo_origen as integer,",
+				"          nombre as string,",
+				"          ci as string,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          nombre_especialidad as string,",
+				"          area_especialidad as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT \\n    e.id_efectivo AS id_efectivo_origen,\\n    e.nombre,\\n    e.ci,\\n    e.genero,\\n    e.departamento_origen,\\n    es.nombre AS nombre_especialidad,\\n    es.area AS area_especialidad\\nFROM silver.efectivos e\\nLEFT JOIN silver.especialidades es \\n    ON e.id_especialidad = es.id_especialidad',",
+				"     format: 'query') ~> silverEfectivos",
+				"silverEfectivos sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          efectivo_key as integer,",
+				"          id_efectivo_origen as integer,",
+				"          nombre as string,",
+				"          ci as string,",
+				"          genero as string,",
+				"          departamento_origen as string,",
+				"          nombre_especialidad as string,",
+				"          area_especialidad as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_efectivo_origen,",
+				"          nombre,",
+				"          ci,",
+				"          genero,",
+				"          departamento_origen,",
+				"          nombre_especialidad,",
+				"          area_especialidad",
+				"     )) ~> goldDimEfectivos"
+			]
+		}
+	}
+}

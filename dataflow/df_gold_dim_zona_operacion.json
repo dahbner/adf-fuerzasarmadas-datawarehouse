@@ -1,0 +1,79 @@
+{
+	"name": "df_gold_dim_zona_operacion",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_zonas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "gold_dim_zona_operacion",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          id_zona_origen as integer,",
+				"          nombre as string,",
+				"          departamento as string,",
+				"          frontera_con as string,",
+				"          tipo_terreno as string,",
+				"          altitud_msnm as integer,",
+				"          acceso_carretero as string,",
+				"          nivel_riesgo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    id_zona AS id_zona_origen,\\n    nombre,\\n    departamento,\\n    frontera_con,\\n    tipo_terreno,\\n    altitud_msnm,\\n    acceso_carretero,\\n    nivel_riesgo\\nFROM silver.zonas',",
+				"     format: 'query') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          zona_key as integer,",
+				"          id_zona_origen as integer,",
+				"          nombre as string,",
+				"          departamento as string,",
+				"          frontera_con as string,",
+				"          tipo_terreno as string,",
+				"          altitud_msnm as integer,",
+				"          acceso_carretero as string,",
+				"          nivel_riesgo as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_zona_origen,",
+				"          nombre,",
+				"          departamento,",
+				"          frontera_con,",
+				"          tipo_terreno,",
+				"          altitud_msnm,",
+				"          acceso_carretero,",
+				"          nivel_riesgo",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

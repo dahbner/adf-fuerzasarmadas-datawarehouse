@@ -1,0 +1,59 @@
+{
+	"name": "gold_dim_zona_operacion",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_destino_dw_ffaa",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "gold"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "zona_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_zona_origen",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "departamento",
+				"type": "varchar"
+			},
+			{
+				"name": "frontera_con",
+				"type": "varchar"
+			},
+			{
+				"name": "tipo_terreno",
+				"type": "varchar"
+			},
+			{
+				"name": "altitud_msnm",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "acceso_carretero",
+				"type": "varchar"
+			},
+			{
+				"name": "nivel_riesgo",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "gold",
+			"table": "dim_zona_operacion"
+		}
+	}
+}

@@ -1,0 +1,82 @@
+{
+	"name": "df_gold_dim_unidad",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_unidades",
+						"type": "DatasetReference"
+					},
+					"name": "silverUnidad"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "gold_dim_unidad",
+						"type": "DatasetReference"
+					},
+					"name": "goldDimUnidad"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          id_unidad_origen as integer,",
+				"          nombre_unidad as string,",
+				"          codigo as string,",
+				"          ciudad as string,",
+				"          departamento as string,",
+				"          tipo_cuartel as string,",
+				"          nombre_brigada as string,",
+				"          nombre_division as string,",
+				"          nombre_rama as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT \\n    u.id_unidad AS id_unidad_origen,\\n    u.nombre AS nombre_unidad,\\n    u.codigo,\\n    u.ciudad,\\n    u.departamento,\\n    u.tipo_cuartel,\\n    b.nombre AS nombre_brigada,\\n    d.nombre AS nombre_division,\\n    r.nombre AS nombre_rama\\nFROM silver.unidades u\\nLEFT JOIN silver.estructura_organizacional b ON u.id_brigada = b.id_estructura\\nLEFT JOIN silver.estructura_organizacional d ON b.id_padre = d.id_estructura\\nLEFT JOIN silver.estructura_organizacional r ON d.id_padre = r.id_estructura',",
+				"     format: 'query') ~> silverUnidad",
+				"silverUnidad sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          unidad_key as integer,",
+				"          id_unidad_origen as integer,",
+				"          nombre_unidad as string,",
+				"          codigo as string,",
+				"          ciudad as string,",
+				"          departamento as string,",
+				"          tipo_cuartel as string,",
+				"          nombre_brigada as string,",
+				"          nombre_division as string,",
+				"          nombre_rama as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_unidad_origen,",
+				"          nombre_unidad,",
+				"          codigo,",
+				"          ciudad,",
+				"          departamento,",
+				"          tipo_cuartel,",
+				"          nombre_brigada,",
+				"          nombre_division,",
+				"          nombre_rama",
+				"     )) ~> goldDimUnidad"
+			]
+		}
+	}
+}
