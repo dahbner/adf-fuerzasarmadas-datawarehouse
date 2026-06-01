@@ -21,7 +21,7 @@
 						"referenceName": "silver_zonas",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "silverZonas"
 				}
 			],
 			"transformations": [
@@ -37,13 +37,21 @@
 				"          frontera_con as string,",
 				"          tipo_terreno as string,",
 				"          altitud_msnm as string,",
-				"          acceso_carretero as string",
+				"          acceso_carretero as string,",
+				"          nivel_riesgo as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> bronzeZonas",
-				"bronzeZonas derive() ~> derivedColumn1",
+				"bronzeZonas derive(id_zona = toInteger(id_zona),",
+				"          nombre = trim(regexReplace(nombre, '\\\\s+', ' ')),",
+				"          departamento = initCap(trim(regexReplace(departamento, '\\\\s+', ' '))),",
+				"          frontera_con = iif(isNull(frontera_con) || lower(trim(frontera_con)) == 'null' || trim(frontera_con) == '', 'Ninguna', trim(regexReplace(frontera_con, '\\\\s+', ' '))),",
+				"          tipo_terreno = initCap(trim(regexReplace(tipo_terreno, '\\\\s+', ' '))),",
+				"          altitud_msnm = toInteger(altitud_msnm),",
+				"          acceso_carretero = iif(lower(trim(acceso_carretero)) == 'true', 'Sí', 'No'),",
+				"          nivel_riesgo = initCap(trim(regexReplace(nivel_riesgo, '\\\\s+', ' ')))) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -53,7 +61,8 @@
 				"          frontera_con as string,",
 				"          tipo_terreno as string,",
 				"          altitud_msnm as integer,",
-				"          acceso_carretero as string",
+				"          acceso_carretero as string,",
+				"          nivel_riesgo as string",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -71,8 +80,9 @@
 				"          frontera_con,",
 				"          tipo_terreno,",
 				"          altitud_msnm,",
-				"          acceso_carretero",
-				"     )) ~> sink1"
+				"          acceso_carretero,",
+				"          nivel_riesgo",
+				"     )) ~> silverZonas"
 			]
 		}
 	}

@@ -21,7 +21,7 @@
 						"referenceName": "silver_rangos",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "silverRangos"
 				}
 			],
 			"transformations": [
@@ -41,11 +41,11 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> bronzeRangos",
-				"bronzeRangos derive(id_rango = ERROR_FUNCTION(''),",
-				"          nombre = ERROR_FUNCTION(''),",
-				"          categoria = ERROR_FUNCTION(''),",
-				"          nivel_jerarquico = ERROR_FUNCTION(''),",
-				"          abreviatura = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"bronzeRangos derive(id_rango = toInteger(id_rango),",
+				"          nombre = trim(nombre),",
+				"          categoria = trim(categoria),",
+				"          nivel_jerarquico = toInteger(nivel_jerarquico),",
+				"          abreviatura = trim(abreviatura)) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -70,7 +70,7 @@
 				"          categoria,",
 				"          nivel_jerarquico,",
 				"          abreviatura",
-				"     )) ~> sink1"
+				"     )) ~> silverRangos"
 			]
 		}
 	}

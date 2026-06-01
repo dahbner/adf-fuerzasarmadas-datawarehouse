@@ -559,7 +559,8 @@
 				"          frontera_con as string,",
 				"          tipo_terreno as string,",
 				"          altitud_msnm as string,",
-				"          acceso_carretero as string",
+				"          acceso_carretero as string,",
+				"          nivel_riesgo as string",
 				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -577,7 +578,8 @@
 				"          frontera_con,",
 				"          tipo_terreno,",
 				"          altitud_msnm,",
-				"          acceso_carretero",
+				"          acceso_carretero,",
+				"          nivel_riesgo",
 				"     )) ~> bronzeZonas"
 			]
 		}

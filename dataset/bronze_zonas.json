@@ -38,6 +38,10 @@
 			{
 				"name": "acceso_carretero",
 				"type": "varchar"
+			},
+			{
+				"name": "nivel_riesgo",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {

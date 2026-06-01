@@ -1,0 +1,76 @@
+{
+	"name": "df_silver_unidades",
+	"properties": {
+		"folder": {
+			"name": "silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bronze_unidades",
+						"type": "DatasetReference"
+					},
+					"name": "bronzeUnidades"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_unidades",
+						"type": "DatasetReference"
+					},
+					"name": "silverUnidades"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_unidad as string,",
+				"          id_brigada as string,",
+				"          nombre as string,",
+				"          codigo as string,",
+				"          ciudad as string,",
+				"          departamento as string,",
+				"          tipo_cuartel as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> bronzeUnidades",
+				"bronzeUnidades derive(id_unidad = toInteger(id_unidad),",
+				"          id_brigada = toInteger(id_brigada),",
+				"          nombre = trim(regexReplace(nombre, '\\\\s+', ' ')),",
+				"          codigo = upper(trim(regexReplace(codigo, '\\\\s+', ' '))),",
+				"          ciudad = initCap(trim(regexReplace(ciudad, '\\\\s+', ' '))),",
+				"          departamento = initCap(trim(regexReplace(departamento, '\\\\s+', ' '))),",
+				"          tipo_cuartel = initCap(trim(regexReplace(tipo_cuartel, '\\\\s+', ' ')))) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_unidad as string,",
+				"          id_brigada as string,",
+				"          nombre as string,",
+				"          codigo as string,",
+				"          ciudad as string,",
+				"          departamento as string,",
+				"          tipo_cuartel as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> silverUnidades"
+			]
+		}
+	}
+}
